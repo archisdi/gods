@@ -1,14 +1,12 @@
 package main
 
 import (
-	"ds/tree"
-	"fmt"
+	"ds/graph"
 )
 
 func main() {
-	tree := tree.New([]int{10, 15, 5, 22, 8, 1, 4})
+	// tree := tree.New([]int{10, 15, 5, 22, 8, 1, 4})
 
-	// fmt.Println(tree.Lowest())
-	// fmt.Println(tree.Highest())
-	fmt.Println(tree.Exist(5))
+	graph := graph.New([]int{1, 2, 3, 4, 5, 6, 7}, []graph.Edge{{1, 4}, {1, 5}, {1, 6}, {2, 5}, {2, 6}, {3, 1}, {3, 6}})
+	graph.DepthFirstSearch(3, 6)
 }
