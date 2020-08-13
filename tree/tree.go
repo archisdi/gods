@@ -93,13 +93,11 @@ func (n *Node) Exist(value int) bool {
 	}
 	if *n.Data >= value {
 		if n.Left != nil {
-			fmt.Println("<-")
 			return n.Left.Exist(value)
 		}
 		return false
 	}
 	if n.Right != nil {
-		fmt.Println("->")
 		return n.Right.Exist(value)
 	}
 	return false
