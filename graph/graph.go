@@ -1,42 +1,10 @@
 package graph
 
 import (
+	"ds/list"
 	"errors"
 	"fmt"
 )
-
-// Stack ...
-type Stack []*Node
-
-func (p *Stack) push(node *Node) {
-	*p = append(*p, node)
-}
-
-func (p *Stack) add(node *Node) {
-	*p = append([]*Node{node}, *p...)
-}
-
-func (p *Stack) pop() {
-	*p = (*p)[:len(*p)-1]
-}
-func (p *Stack) dequeue() *Node {
-	node := (*p)[0]
-	*p = (*p)[1:]
-	return node
-}
-
-func (p *Stack) isEmpty() bool {
-	return len(*p) == 0
-}
-
-func (p *Stack) contains(node *Node) bool {
-	for _, s := range *p {
-		if s.Data == node.Data {
-			return true
-		}
-	}
-	return false
-}
 
 // Graph ...
 type Graph map[int]*Node
@@ -62,23 +30,23 @@ func (g *Graph) DepthFirstSearch(source int, destination int) {
 	src, _ := g.getNode(source)
 	dst, _ := g.getNode(destination)
 	visited := &Graph{}
-	Path := &Stack{}
+	Path := &list.Stack{}
 
 	g.hasDfs(src, dst, visited, Path)
 
 	// print Stack
 	for _, p := range *Path {
-		fmt.Println(p.Data)
+		fmt.Println(p.(int))
 	}
 }
 
-func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *Stack) bool {
+func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *list.Stack) bool {
 	if visited.contains(source) {
-		path.pop()
+		path.Pop()
 		return false
 	}
 
-	path.push(source)
+	path.Push(source)
 	visited.add(source)
 
 	if source.Data == destination.Data {
@@ -91,7 +59,7 @@ func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *St
 		}
 	}
 
-	path.pop()
+	path.Pop()
 	return false
 }
 
@@ -99,28 +67,33 @@ func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *St
 func (g *Graph) BreadthFirstSearch(source int, destination int) bool {
 	src, _ := g.getNode(source)
 	dst, _ := g.getNode(destination)
-	Queue := &Stack{}
+	Queue := &list.Queue{}
 	visited := &Graph{}
 
-	Queue.push(src)
-	for !Queue.isEmpty() {
-		currentNode := Queue.dequeue()
+	Queue.Enqueue(src.Data)
+	for !Queue.IsEmpty() {
+		nodeIdx := Queue.Dequeue()
+		currentNode, _ := g.getNode(nodeIdx.(int))
+
 		if currentNode.Data == dst.Data {
 			break
 		}
+
 		visited.add(currentNode)
-		for _, child := range currentNode.Connection {
-			if !visited.contains(child) && !Queue.contains(child) {
-				Queue.push(child)
+
+		for _, childIdx := range currentNode.Connection {
+			child, _ := g.getNode(childIdx.Data)
+			if !visited.contains(child) && !Queue.Contains(child) {
+				Queue.Enqueue(child.Data)
 				child.Parent = currentNode
 			}
 		}
 	}
 
-	paths := Stack{}
+	paths := list.Queue{}
 	path := dst
 	for {
-		paths.add(path)
+		paths.Enqueue(path)
 		if path.Parent == nil {
 			break
 		}
@@ -128,7 +101,7 @@ func (g *Graph) BreadthFirstSearch(source int, destination int) bool {
 	}
 
 	for _, p := range paths {
-		fmt.Println(p.Data)
+		fmt.Println(p.(*Node).Data)
 	}
 
 	return dst.Parent != nil
