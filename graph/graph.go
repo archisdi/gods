@@ -46,7 +46,7 @@ func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *li
 		return false
 	}
 
-	path.Push(source)
+	path.Push(source.Data)
 	visited.add(source)
 
 	if source.Data == destination.Data {
