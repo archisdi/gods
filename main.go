@@ -7,6 +7,6 @@ import (
 func main() {
 	// tree := tree.New([]int{10, 15, 5, 22, 8, 1, 4})
 
-	graph := graph.New([]int{1, 2, 3, 4, 5, 6, 7}, []graph.Edge{{1, 4}, {1, 5}, {1, 6}, {2, 5}, {2, 6}, {3, 1}, {3, 6}})
-	graph.DepthFirstSearch(3, 6)
+	graph := graph.New([]int{1, 2, 3, 4, 5, 6, 7}, []graph.Edge{{1, 4}, {1, 5}, {1, 6}, {2, 5}, {2, 6}, {3, 1}, {3, 2}, {3, 6}})
+	graph.BreadthFirstSearch(3, 6)
 }

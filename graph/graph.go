@@ -5,15 +5,37 @@ import (
 	"fmt"
 )
 
-// Path ...
-type Path []*Node
+// Stack ...
+type Stack []*Node
 
-func (p *Path) add(node *Node) {
+func (p *Stack) push(node *Node) {
 	*p = append(*p, node)
 }
 
-func (p *Path) pop() {
+func (p *Stack) add(node *Node) {
+	*p = append([]*Node{node}, *p...)
+}
+
+func (p *Stack) pop() {
 	*p = (*p)[:len(*p)-1]
+}
+func (p *Stack) dequeue() *Node {
+	node := (*p)[0]
+	*p = (*p)[1:]
+	return node
+}
+
+func (p *Stack) isEmpty() bool {
+	return len(*p) == 0
+}
+
+func (p *Stack) contains(node *Node) bool {
+	for _, s := range *p {
+		if s.Data == node.Data {
+			return true
+		}
+	}
+	return false
 }
 
 // Graph ...
@@ -36,28 +58,27 @@ func (g *Graph) add(node *Node) {
 }
 
 // DepthFirstSearch ...
-func (g *Graph) DepthFirstSearch(source int, destination int) bool {
+func (g *Graph) DepthFirstSearch(source int, destination int) {
 	src, _ := g.getNode(source)
 	dst, _ := g.getNode(destination)
 	visited := &Graph{}
-	path := &Path{}
+	Path := &Stack{}
 
-	hasDfs := g.hasDfs(src, dst, visited, path)
+	g.hasDfs(src, dst, visited, Path)
 
-	// print path
-	for _, p := range *path {
+	// print Stack
+	for _, p := range *Path {
 		fmt.Println(p.Data)
 	}
-
-	return hasDfs
 }
 
-func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *Path) bool {
+func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *Stack) bool {
 	if visited.contains(source) {
+		path.pop()
 		return false
 	}
 
-	path.add(source)
+	path.push(source)
 	visited.add(source)
 
 	if source.Data == destination.Data {
@@ -74,10 +95,50 @@ func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *Pa
 	return false
 }
 
+// BreadthFirstSearch ...
+func (g *Graph) BreadthFirstSearch(source int, destination int) bool {
+	src, _ := g.getNode(source)
+	dst, _ := g.getNode(destination)
+	Queue := &Stack{}
+	visited := &Graph{}
+
+	Queue.push(src)
+	for !Queue.isEmpty() {
+		currentNode := Queue.dequeue()
+		if currentNode.Data == dst.Data {
+			break
+		}
+		visited.add(currentNode)
+		for _, child := range currentNode.Connection {
+			if !visited.contains(child) && !Queue.contains(child) {
+				Queue.push(child)
+				child.Parent = currentNode
+			}
+		}
+	}
+
+	paths := Stack{}
+	path := dst
+	for {
+		paths.add(path)
+		if path.Parent == nil {
+			break
+		}
+		path = path.Parent
+	}
+
+	for _, p := range paths {
+		fmt.Println(p.Data)
+	}
+
+	return dst.Parent != nil
+}
+
 // Node ...
 type Node struct {
 	Data       int
 	Connection Graph
+	Parent     *Node
 }
 
 // Edge ...
@@ -115,6 +176,8 @@ func New(nodes []int, Connection []Edge) Graph {
 		child, cOk := gr[edge.Y]
 		if pOk && cOk {
 			parent.Connect(child)
+			// uncomment for two way graph-
+			// child.Connect(parent)
 		}
 	}
 
