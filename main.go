@@ -2,6 +2,7 @@ package main
 
 import (
 	"ds/search"
+	"fmt"
 )
 
 func main() {
@@ -11,6 +12,7 @@ func main() {
 	// linkedStack := list.NewLinkedStack([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
 	// heap := tree.NewMinHeap([]int{10, 15, 20, 17, 25})
 
-	list := search.List{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 20, 50, 56, 67, 78, 89, 90, 100, 245}
-	list.BinarySearch(245)
+	list := search.List{4, 8, 1, 4, 9, 2, 4, 7, 3, 23, 74, 23, 11, 2, 66, 84, 45, 21, 1, 4}
+	list.QuickSort()
+	fmt.Println(list)
 }
