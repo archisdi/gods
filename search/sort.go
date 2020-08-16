@@ -32,40 +32,31 @@ func (l *List) QuickSort() {
 	recursiveQuickSort(*l, 0, l.length()-1)
 }
 
-func recursiveQuickSort(arr []int, left int, right int) {
+func recursiveQuickSort(arr []int, start int, end int) {
 	// bounce check
-	if left >= right {
+	if start >= end {
 		return
 	}
-
-	pivot := arr[(left+right)/2]
-	index := partition(arr, left, right, pivot)
-
-	recursiveQuickSort(arr, left, index-1)
-	recursiveQuickSort(arr, index+1, right)
+	index := partition(arr, start, end)
+	recursiveQuickSort(arr, start, index-1)
+	recursiveQuickSort(arr, index+1, end)
 }
 
-func partition(arr []int, left int, right int, pivot int) int {
-	for left <= right {
-		for arr[left] < pivot {
-			left++
-		}
-
-		for arr[right] > pivot {
-			right--
-		}
-
-		if left <= right {
-			swap(&arr, left, right)
-			left++
-			right--
+func partition(arr []int, start int, end int) int {
+	pivot := arr[end]
+	pIndex := start
+	for i := start; i < end; i++ {
+		if arr[i] <= pivot {
+			swap(&arr, i, pIndex)
+			pIndex++
 		}
 	}
-	return left
+	swap(&arr, pIndex, end)
+	return pIndex
 }
 
 func swap(l *[]int, i, j int) {
 	temp := (*l)[i]
-	(*l)[i] = (*l)[i+1]
-	(*l)[i+1] = temp
+	(*l)[i] = (*l)[j]
+	(*l)[j] = temp
 }
