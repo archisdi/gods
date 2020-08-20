@@ -1,13 +1,22 @@
 package search
 
+import (
+	"fmt"
+)
+
 func (l *List) swap(i, j int) {
 	temp := (*l)[i]
-	(*l)[i] = (*l)[i+1]
-	(*l)[i+1] = temp
+	(*l)[i] = (*l)[j]
+	(*l)[j] = temp
 }
 
 func (l *List) length() int {
 	return len(*l)
+}
+
+// Print ...
+func (l *List) Print() {
+	fmt.Println(*l)
 }
 
 // BubbleSort ...
@@ -32,7 +41,7 @@ func (l *List) QuickSort() {
 	recursiveQuickSort(*l, 0, l.length()-1)
 }
 
-func recursiveQuickSort(arr []int, start int, end int) {
+func recursiveQuickSort(arr List, start int, end int) {
 	// bounce check
 	if start >= end {
 		return
@@ -42,21 +51,35 @@ func recursiveQuickSort(arr []int, start int, end int) {
 	recursiveQuickSort(arr, index+1, end)
 }
 
-func partition(arr []int, start int, end int) int {
+func partition(arr List, start int, end int) int {
 	pivot := arr[end]
 	pIndex := start
 	for i := start; i < end; i++ {
 		if arr[i] <= pivot {
-			swap(&arr, i, pIndex)
+			arr.swap(i, pIndex)
 			pIndex++
 		}
 	}
-	swap(&arr, pIndex, end)
+	arr.swap(pIndex, end)
 	return pIndex
 }
 
-func swap(l *[]int, i, j int) {
-	temp := (*l)[i]
-	(*l)[i] = (*l)[j]
-	(*l)[j] = temp
+// MergeSort ..
+func (l *List) MergeSort() {
+	recursiveMergeSort(*l, 0, l.length()-1)
+}
+
+func recursiveMergeSort(arr List, start int, end int) {
+	if start >= end {
+		return
+	}
+
+	mid := (start + end) / 2
+
+	recursiveMergeSort(arr, start, mid-1)
+	recursiveMergeSort(arr, mid+1, end)
+}
+
+func mergeHalves(arr List, start int, end int) {
+
 }
