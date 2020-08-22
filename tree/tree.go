@@ -2,19 +2,14 @@ package tree
 
 import "fmt"
 
-// Node ...
+// Node represent an element in tree
 type Node struct {
 	Data  *int
 	Left  *Node
 	Right *Node
 }
 
-// IsLeaf ...
-func (n *Node) IsLeaf() bool {
-	return n.Left == nil && n.Right == nil
-}
-
-// Insert ...
+// Insert a new node into tree
 func (n *Node) Insert(value int) {
 	if n.Data == nil {
 		n.Data = &value
@@ -37,7 +32,7 @@ func (n *Node) Insert(value int) {
 	}
 }
 
-// TraverseInorder ...
+// TraverseInorder prints every node in tree from left, top, to right
 func (n *Node) TraverseInorder() {
 	if n.Left != nil {
 		n.Left.TraverseInorder()
@@ -48,7 +43,7 @@ func (n *Node) TraverseInorder() {
 	}
 }
 
-// TraversePreorder ...
+// TraversePreorder prints every node in tree from top, left, to right
 func (n *Node) TraversePreorder() {
 	fmt.Println(*n.Data)
 	if n.Left != nil {
@@ -59,7 +54,7 @@ func (n *Node) TraversePreorder() {
 	}
 }
 
-// TraversePostorder ...
+// TraversePostorder prints every node in tree from left, right, to top
 func (n *Node) TraversePostorder() {
 	if n.Left != nil {
 		n.Left.TraversePostorder()
@@ -70,7 +65,7 @@ func (n *Node) TraversePostorder() {
 	fmt.Println(*n.Data)
 }
 
-// Lowest ...
+// Lowest returns min value node in tree
 func (n *Node) Lowest() int {
 	if n.Left != nil {
 		return n.Left.Lowest()
@@ -78,7 +73,7 @@ func (n *Node) Lowest() int {
 	return *n.Data
 }
 
-// Highest ...
+// Highest returns max value in tree
 func (n *Node) Highest() int {
 	if n.Right != nil {
 		return n.Right.Highest()
@@ -86,7 +81,7 @@ func (n *Node) Highest() int {
 	return *n.Data
 }
 
-// Exist ...
+// Exist search a value within tree
 func (n *Node) Exist(value int) bool {
 	if *n.Data == value {
 		return true
@@ -103,7 +98,7 @@ func (n *Node) Exist(value int) bool {
 	return false
 }
 
-// New ...
+// New returns new tree instance
 func New(elements []int) Node {
 	tree := Node{}
 	for _, element := range elements {
