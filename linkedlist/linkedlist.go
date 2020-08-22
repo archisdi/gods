@@ -4,20 +4,21 @@ import (
 	"fmt"
 )
 
-// Node ...
+// Node represent an element in linkedlist
 type Node struct {
 	Next *Node
 	Prev *Node
 	Data int
 }
 
-// LinkedList ...
+// LinkedList represent the whole list
 type LinkedList struct {
 	Head *Node
 }
 
-// Append ..
+// Append add element to the end of linkedlist
 func (l *LinkedList) Append(val int) {
+	// check if head is exist
 	if l.Head == nil {
 		l.Head = &Node{
 			Data: val,
@@ -25,18 +26,21 @@ func (l *LinkedList) Append(val int) {
 		return
 	}
 
+	// loop until the end of linkedlist
 	current := l.Head
 	for current.Next != nil {
 		current = current.Next
 	}
 
+	// connect tail to new node
 	current.Next = &Node{
 		Data: val,
 	}
 }
 
-// Prepend ...
+// Prepend add element to the begining of the linkedlist
 func (l *LinkedList) Prepend(val int) {
+	// check if head is exist
 	if l.Head == nil {
 		l.Head = &Node{
 			Data: val,
@@ -44,6 +48,7 @@ func (l *LinkedList) Prepend(val int) {
 		return
 	}
 
+	// connect head to the new node
 	currentHead := l.Head
 	newHead := &Node{
 		Data: val,
@@ -52,7 +57,7 @@ func (l *LinkedList) Prepend(val int) {
 	l.Head = newHead
 }
 
-// Delete ...
+// Delete a value within the linkedlist
 func (l *LinkedList) Delete(val int) {
 	if l.Head == nil {
 		return
@@ -74,7 +79,7 @@ func (l *LinkedList) Delete(val int) {
 
 }
 
-// Print ...
+// Print every element in linkedlist
 func (l *LinkedList) Print() {
 	current := l.Head
 	for current != nil {
@@ -83,7 +88,7 @@ func (l *LinkedList) Print() {
 	}
 }
 
-// New ...
+// New returns new Linkedlist instance
 func New(elements []int) LinkedList {
 	ll := LinkedList{}
 
