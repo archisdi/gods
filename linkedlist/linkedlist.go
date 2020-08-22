@@ -59,15 +59,18 @@ func (l *LinkedList) Prepend(val int) {
 
 // Delete a value within the linkedlist
 func (l *LinkedList) Delete(val int) {
+	// check if head is exist
 	if l.Head == nil {
 		return
 	}
 
+	// if element that will be deleted is head, delegate head to next element
 	if l.Head.Data == val {
 		l.Head = l.Head.Next
 		return
 	}
 
+	// loop until element is found, then removes previos and next connection of deleted element
 	current := l.Head
 	for current.Next != nil {
 		if current.Next.Data == val {
