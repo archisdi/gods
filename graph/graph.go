@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-// Graph ...
+// Graph represent the whole node interconnections
 type Graph map[int]*Node
 
 func (g *Graph) getNode(val int) (*Node, error) {
@@ -25,13 +25,14 @@ func (g *Graph) add(node *Node) {
 	(*g)[node.Data] = node
 }
 
-// DepthFirstSearch ...
+// DepthFirstSearch will search a path with child end priority
 func (g *Graph) DepthFirstSearch(source int, destination int) {
 	src, _ := g.getNode(source)
 	dst, _ := g.getNode(destination)
 	visited := &Graph{}
 	Path := &list.Stack{}
 
+	// recursively search within a complete branch then moves on to next branch
 	g.hasDfs(src, dst, visited, Path)
 
 	// print Stack
@@ -41,46 +42,58 @@ func (g *Graph) DepthFirstSearch(source int, destination int) {
 }
 
 func (g *Graph) hasDfs(source *Node, destination *Node, visited *Graph, path *list.Stack) bool {
+	// if node already visited, terminate branch
 	if visited.contains(source) {
 		path.Pop()
 		return false
 	}
 
+	// mark currently visited node
 	path.Push(source.Data)
 	visited.add(source)
 
+	// terminate if currently visited node is destination
 	if source.Data == destination.Data {
 		return true
 	}
 
+	// recursively call every connection in current node
 	for _, child := range source.Connection {
 		if g.hasDfs(child, destination, visited, path) {
 			return true
 		}
 	}
 
+	// if end of the line a.k.a no more path can be generated, terminate the function
 	path.Pop()
 	return false
 }
 
-// BreadthFirstSearch ...
+// BreadthFirstSearch will search a path within every level
 func (g *Graph) BreadthFirstSearch(source int, destination int) bool {
 	src, _ := g.getNode(source)
 	dst, _ := g.getNode(destination)
 	Queue := &list.Queue{}
 	visited := &Graph{}
 
+	// insert source node to queue
 	Queue.Enqueue(src.Data)
+
+	// terminate loop if queue is empty
 	for !Queue.IsEmpty() {
+		// get currently visited node
 		nodeIdx := Queue.Dequeue()
 		currentNode, _ := g.getNode(nodeIdx.(int))
 
+		// if current visited node is destination, terminate function
 		if currentNode.Data == dst.Data {
 			break
 		}
 
+		// mark current node as visited
 		visited.add(currentNode)
 
+		// for every connection in currently visited node, add to queue if not yet visited
 		for _, childIdx := range currentNode.Connection {
 			child, _ := g.getNode(childIdx.Data)
 			if !visited.contains(child) && !Queue.Contains(child) {
@@ -90,6 +103,7 @@ func (g *Graph) BreadthFirstSearch(source int, destination int) bool {
 		}
 	}
 
+	// reconstruct path to get correct order
 	paths := list.Queue{}
 	path := dst
 	for {
@@ -107,33 +121,27 @@ func (g *Graph) BreadthFirstSearch(source int, destination int) bool {
 	return dst.Parent != nil
 }
 
-// Node ...
+// Node represent an element of graph
 type Node struct {
 	Data       int
 	Connection Graph
 	Parent     *Node
 }
 
-// Edge ...
+// Edge represent a connection between a node
 type Edge struct {
 	X int
 	Y int
 }
 
-// HasConnection ...
-func (n *Node) HasConnection(value int) bool {
-	_, ok := n.Connection[value]
-	return ok
-}
-
-// Connect ...
+// Connect two node
 func (n *Node) Connect(node *Node) {
-	if !n.HasConnection(n.Data) {
+	if _, ok := n.Connection[n.Data]; !ok {
 		n.Connection[node.Data] = node
 	}
 }
 
-// New ...
+// New returns a new instance of graph
 func New(nodes []int, Connection []Edge) Graph {
 	gr := Graph{}
 
